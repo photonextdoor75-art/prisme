@@ -1,0 +1,5 @@
+{
+  "name": "Prisme Circulaire",
+  "description": "Une Tour de Contrôle pour l'Économie Circulaire. Transformez vos actifs dormants en ressources. NOTE: L'API Key Gemini est requise dans l'environnement. Une base de données (Firebase) sera nécessaire ultérieurement pour sauvegarder l'historique des analyses et les profils utilisateurs.",
+  "requestFramePermissions": []
+}
