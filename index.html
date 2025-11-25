@@ -6,6 +6,15 @@
     <title>Prisme Circulaire</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
+      // POLYFILL ENVIRONMENT FOR BROWSER
+      // This allows 'process.env.API_KEY' to work in the browser, fixing the "Blue Screen" crash
+      // and integrating the provided Gemini Key.
+      window.process = {
+        env: {
+          API_KEY: "AIzaSyBMDXPIPd9z6XUDIRewhJi6a_MyZ-9GU-0"
+        }
+      };
+
       tailwind.config = {
         theme: {
           extend: {

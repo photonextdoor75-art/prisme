@@ -1,7 +1,9 @@
 import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { MetricResult } from '../types';
 
-const apiKey = process.env.API_KEY || '';
+// Safely access process.env to prevent ReferenceError: process is not defined
+// This is critical for browser environments where process is not polyfilled by default
+const apiKey = (typeof process !== 'undefined' && process.env) ? (process.env.API_KEY || '') : '';
 
 // Initialize logic lazily or handle missing key gracefully in UI
 let ai: GoogleGenAI | null = null;
