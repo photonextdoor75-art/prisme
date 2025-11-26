@@ -1,8 +1,9 @@
+
 import React, { useState } from 'react';
 import { analyzeAssets } from '../services/geminiService';
 import { MetricResult } from '../types';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import { Loader2, Coins, Leaf, Users, RefreshCw, ArrowRight, Save, CheckCircle2 } from 'lucide-react';
+import { Loader2, Coins, Leaf, Users, RefreshCw, ArrowRight, Save, CheckCircle2, WifiOff } from 'lucide-react';
 import { db } from '../services/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
@@ -11,7 +12,7 @@ const ValuationEngine: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<MetricResult | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'offline'>('idle');
 
   const handleAnalyze = async () => {
     if (!input.trim()) return;
@@ -23,7 +24,7 @@ const ValuationEngine: React.FC = () => {
       const data = await analyzeAssets(input);
       setResult(data);
       
-      // Auto-save to Firebase
+      // Auto-save to Firebase if connected
       saveResultToFirebase(input, data);
 
     } catch (err) {
@@ -34,6 +35,10 @@ const ValuationEngine: React.FC = () => {
   };
 
   const saveResultToFirebase = async (assetDescription: string, metricResult: MetricResult) => {
+    if (!db) {
+        setSaveStatus('offline');
+        return;
+    }
     try {
         setSaveStatus('saving');
         await addDoc(collection(db, "valuations"), {
@@ -100,6 +105,12 @@ const ValuationEngine: React.FC = () => {
              <div className="mt-4 p-3 bg-emerald-900/20 border border-emerald-500/30 text-emerald-400 rounded-lg text-sm flex items-center gap-2 animate-fade-in">
                 <CheckCircle2 size={16} />
                 Résultat sauvegardé dans Firebase.
+             </div>
+          )}
+          {saveStatus === 'offline' && (
+             <div className="mt-4 p-3 bg-slate-800/50 border border-slate-700 text-slate-400 rounded-lg text-xs flex items-center gap-2 animate-fade-in">
+                <WifiOff size={14} />
+                Mode hors-ligne : Résultat non archivé.
              </div>
           )}
         </div>
