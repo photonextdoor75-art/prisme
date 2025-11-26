@@ -5,6 +5,8 @@ import TerritorialMap from './components/TerritorialMap';
 import CrossBorderBridge from './components/CrossBorderBridge';
 import SystemDiagnostics from './components/SystemDiagnostics';
 import PACAMap from './components/PACAMap';
+import ItalyMap from './components/ItalyMap';
+import CorsicaMap from './components/CorsicaMap';
 import { LayoutDashboard, Coins, Map as MapIcon, Globe, ShieldCheck, Database, MapPin } from 'lucide-react';
 
 const App: React.FC = () => {
@@ -20,6 +22,10 @@ const App: React.FC = () => {
         return <CrossBorderBridge />;
       case AppView.REGION_SUD:
         return <PACAMap />;
+      case AppView.ITALY_MAP:
+        return <ItalyMap />;
+      case AppView.CORSICA_MAP:
+        return <CorsicaMap />;
       case AppView.DASHBOARD:
       default:
         return <DashboardHome onChangeView={setCurrentView} />;
@@ -75,6 +81,18 @@ const App: React.FC = () => {
                 label="Région Sud (PACA)" 
                 active={currentView === AppView.REGION_SUD} 
                 onClick={() => setCurrentView(AppView.REGION_SUD)} 
+             />
+             <NavItem 
+                icon={<MapPin size={20} />} 
+                label="Corse (Corsica)" 
+                active={currentView === AppView.CORSICA_MAP} 
+                onClick={() => setCurrentView(AppView.CORSICA_MAP)} 
+             />
+             <NavItem 
+                icon={<MapPin size={20} />} 
+                label="Italie (Italia)" 
+                active={currentView === AppView.ITALY_MAP} 
+                onClick={() => setCurrentView(AppView.ITALY_MAP)} 
              />
           </nav>
         </div>
