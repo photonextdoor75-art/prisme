@@ -1,3 +1,4 @@
+
 export interface MetricResult {
   monetaryValue: number;
   currency: string;
@@ -29,9 +30,10 @@ export interface CrossBorderFlow {
 export enum AppView {
   DASHBOARD = 'DASHBOARD',
   VALUATION = 'VALUATION',
-  MAP = 'MAP',
   BRIDGE = 'BRIDGE',
   REGION_SUD = 'REGION_SUD',
   ITALY_MAP = 'ITALY_MAP',
-  CORSICA_MAP = 'CORSICA_MAP'
+  CORSICA_MAP = 'CORSICA_MAP',
+  GREENLINA_MACHINE = 'GREENLINA_MACHINE',
+  ECO_MARKETING = 'ECO_MARKETING'
 }

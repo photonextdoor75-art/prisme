@@ -1,13 +1,15 @@
+
 import React, { useState } from 'react';
 import { AppView } from './types';
 import ValuationEngine from './components/ValuationEngine';
-import TerritorialMap from './components/TerritorialMap';
 import CrossBorderBridge from './components/CrossBorderBridge';
 import SystemDiagnostics from './components/SystemDiagnostics';
 import PACAMap from './components/PACAMap';
 import ItalyMap from './components/ItalyMap';
 import CorsicaMap from './components/CorsicaMap';
-import { LayoutDashboard, Coins, Map as MapIcon, Globe, ShieldCheck, Database, MapPin } from 'lucide-react';
+import GreenlinaMachine from './components/GreenlinaMachine';
+import EcoMarketing from './components/EcoMarketing';
+import { LayoutDashboard, Coins, Globe, ShieldCheck, MapPin, Zap, Megaphone } from 'lucide-react';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>(AppView.DASHBOARD);
@@ -16,8 +18,6 @@ const App: React.FC = () => {
     switch (currentView) {
       case AppView.VALUATION:
         return <ValuationEngine />;
-      case AppView.MAP:
-        return <TerritorialMap />;
       case AppView.BRIDGE:
         return <CrossBorderBridge />;
       case AppView.REGION_SUD:
@@ -26,6 +26,10 @@ const App: React.FC = () => {
         return <ItalyMap />;
       case AppView.CORSICA_MAP:
         return <CorsicaMap />;
+      case AppView.GREENLINA_MACHINE:
+        return <GreenlinaMachine />;
+      case AppView.ECO_MARKETING:
+        return <EcoMarketing />;
       case AppView.DASHBOARD:
       default:
         return <DashboardHome onChangeView={setCurrentView} />;
@@ -62,12 +66,6 @@ const App: React.FC = () => {
                 onClick={() => setCurrentView(AppView.VALUATION)} 
              />
              <NavItem 
-                icon={<MapIcon size={20} />} 
-                label="Carte Gisements" 
-                active={currentView === AppView.MAP} 
-                onClick={() => setCurrentView(AppView.MAP)} 
-             />
-             <NavItem 
                 icon={<Globe size={20} />} 
                 label="Pont Transfrontalier" 
                 active={currentView === AppView.BRIDGE} 
@@ -75,7 +73,22 @@ const App: React.FC = () => {
              />
              
              <div className="my-2 h-px bg-slate-800 mx-2"></div>
-             <p className="hidden lg:block px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Focus</p>
+             <p className="hidden lg:block px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Innovation</p>
+             <NavItem 
+                icon={<Zap size={20} />} 
+                label="Financement Machine" 
+                active={currentView === AppView.GREENLINA_MACHINE} 
+                onClick={() => setCurrentView(AppView.GREENLINA_MACHINE)} 
+             />
+             <NavItem 
+                icon={<Megaphone size={20} />} 
+                label="Marketing Écologique" 
+                active={currentView === AppView.ECO_MARKETING} 
+                onClick={() => setCurrentView(AppView.ECO_MARKETING)} 
+             />
+
+             <div className="my-2 h-px bg-slate-800 mx-2"></div>
+             <p className="hidden lg:block px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Territoires</p>
              <NavItem 
                 icon={<MapPin size={20} />} 
                 label="Région Sud (PACA)" 
@@ -159,11 +172,11 @@ const DashboardHome: React.FC<{ onChangeView: (view: AppView) => void }> = ({ on
                 color="emerald"
             />
             <DashboardCard 
-                title="Visibilité Territoriale"
-                desc="Cartographie des mines urbaines."
-                icon={<MapIcon className="text-blue-400" size={32} />}
+                title="Région Sud (PACA)"
+                desc="Vos gisements locaux en temps réel."
+                icon={<MapPin className="text-blue-400" size={32} />}
                 stats="6 Hubs identifiés"
-                onClick={() => onChangeView(AppView.MAP)}
+                onClick={() => onChangeView(AppView.REGION_SUD)}
                 color="blue"
             />
             <DashboardCard 

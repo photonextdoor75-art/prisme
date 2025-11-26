@@ -1,26 +1,27 @@
+
 import React, { useState } from 'react';
-import { Truck, Package, MapPin, Info, Anchor, Leaf, Wine } from 'lucide-react';
+import { Truck, Package, MapPin, Info, Anchor, Recycle, Ship, Zap } from 'lucide-react';
 
 // Données mockées pour la Corse (Spécificités insulaires)
-const CORSICA_DATA: Record<string, { name: string; pref: string; desc: string; transits: { material: string; tons: number; type: string; icon: any }[] }> = {
+const CORSICA_DATA: Record<string, { name: string; pref: string; desc: string; recycler?: string; transits: { material: string; tons: number; type: string; icon: any }[] }> = {
   "2A": { 
     name: "Corse-du-Sud", 
     pref: "Ajaccio",
-    desc: "Hub portuaire et touristique majeur.",
+    desc: "Zone de concentration des navires de plaisance (Porto-Vecchio, Bonifacio).",
+    recycler: "Centre Agréé APER Corse",
     transits: [
-      { material: "Déchets Nautiques (Plaisance)", tons: 230, type: "industrial", icon: Anchor },
-      { material: "Verre (Hôtellerie & Restauration)", tons: 850, type: "raw_material", icon: Wine },
-      { material: "Cartons Compactés (Import)", tons: 450, type: "raw_material", icon: Package }
+      { material: "Épaves Plaisance (VHU)", tons: 310, type: "industrial", icon: Anchor },
+      { material: "Résine Polyester", tons: 120, type: "industrial", icon: Ship },
+      { material: "Batteries Marines", tons: 15, type: "tech", icon: Package }
     ]
   },
   "2B": { 
     name: "Haute-Corse", 
     pref: "Bastia",
-    desc: "Zone agricole et interface logistique nord.",
+    desc: "Hub logistique pour l'export des déchets vers l'Italie et Toulon.",
     transits: [
-      { material: "Biomasse Agricole (Clémentines/Vigne)", tons: 1200, type: "raw_material", icon: Leaf },
-      { material: "Ferrailles Portuaires", tons: 680, type: "industrial", icon: Truck },
-      { material: "Plastiques Agricoles", tons: 320, type: "raw_material", icon: Package }
+      { material: "Ferrailles de Marine", tons: 450, type: "raw_material", icon: Truck },
+      { material: "CSR (Vers Cimenteries)", tons: 200, type: "industrial", icon: Package }
     ]
   }
 };
@@ -49,20 +50,20 @@ const CorsicaMap: React.FC = () => {
     <div className="h-full p-6 animate-fade-in flex flex-col lg:flex-row gap-6">
       
       {/* Map Container */}
-      <div className="w-full lg:w-1/2 glass-panel rounded-2xl p-8 flex flex-col items-center relative overflow-hidden">
+      <div className="w-full lg:w-1/2 glass-panel rounded-2xl p-8 flex flex-col items-center relative overflow-hidden bg-slate-900">
         <div className="absolute top-6 left-6 z-10">
             <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                <MapPin className="text-emerald-400" /> Corse (Corsica)
+                <Anchor className="text-emerald-400" /> Corse (Filière Nautique)
             </h2>
-            <p className="text-slate-400 text-sm">Gestion des flux insulaires</p>
+            <p className="text-slate-400 text-sm">Logistique Insulaire & Recyclage</p>
         </div>
 
         {/* Carte centrée */}
-        <div className="w-full h-full flex items-center justify-center">
+        <div className="w-full h-full flex items-center justify-center relative">
             <svg 
                 id="map" 
                 viewBox="435 440 50 105" 
-                className="h-[80%] w-auto drop-shadow-2xl"
+                className="h-[80%] w-auto drop-shadow-2xl z-10"
                 xmlns="http://www.w3.org/2000/svg"
             >
                 <g id="corsica-group">
@@ -85,6 +86,12 @@ const CorsicaMap: React.FC = () => {
                         d="M469.96347,445.8937 L467.02597,447.86245 L467.43222,449.79995 L468.99472,451.7687 L467.24472,453.11245 L468.02597,454.67495 L466.83847,456.04995 L466.83847,457.79995 L468.80722,459.5812 L468.80722,462.29995 L467.61972,464.8312 L466.27597,465.42495 L464.71347,463.2687 L461.96347,463.48745 L461.36972,463.0812 L459.02597,463.0812 L456.90097,465.04995 L456.08847,468.36245 L451.02597,469.3312 L447.11972,472.6437 L446.33847,474.79995 L444.40097,474.61245 L443.40097,473.42495 L442.83847,476.7687 L441.46347,477.3312 L441.05722,480.4562 L441.65097,481.8312 L439.49472,483.3937 L438.90097,484.9562 L441.08847,485.36245 L441.46347,486.42495 L445.33847,486.42495 L446.40097,487.11245 L449.24472,486.5812 L450.46347,487.29995 L449.93222,488.17495 L451.86972,490.8312 L455.58847,490.8312 L456.49472,493.48745 L459.11972,493.48745 L458.96347,495.0812 L461.08847,497.73745 L462.15097,498.2687 L463.55722,499.1437 L463.55722,502.5187 L464.61972,503.3937 L466.74472,503.3937 L467.27597,504.2687 L467.61972,509.04995 L468.86972,509.92495 L468.33847,510.6437 L468.68222,513.4562 L472.74472,513.29995 L476.15097,511.04995 L476.02597,505.2687 L480.71347,498.6437 L480.71347,487.7062 L478.77597,483.98745 L478.18222,472.2687 L476.80722,470.11245 L474.27597,468.17495 L473.86972,460.92495 L475.05722,457.61245 L473.49472,452.3312 L472.52597,448.04995 L471.71347,446.86245 L469.96347,445.8937 L469.96347,445.8937 L469.96347,445.8937 L469.96347,445.8937 Z"
                     />
                 </g>
+
+                {/* Recycleurs (Points Bleus Statiques) */}
+                {/* Centre Agréé Corse (Ajaccio) */}
+                <g className="cursor-pointer group" onClick={() => handleClick("2A")}>
+                    <circle cx="445" cy="495" r="3" className="fill-blue-500" />
+                </g>
             </svg>
         </div>
       </div>
@@ -99,14 +106,37 @@ const CorsicaMap: React.FC = () => {
                         <MapPin size={16} />
                         <span>Préfecture : {currentData.pref}</span>
                     </div>
+                    {currentData.recycler && (
+                        <div className="mt-3 p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg flex items-center gap-2">
+                            <Recycle size={18} className="text-blue-400" />
+                            <div>
+                                <p className="text-xs text-blue-300 uppercase font-bold">Partenaire APER</p>
+                                <p className="text-white font-medium">{currentData.recycler}</p>
+                            </div>
+                        </div>
+                    )}
                     <p className="text-slate-300 italic text-sm border-t border-slate-700 pt-3">
                         "{currentData.desc}"
                     </p>
                 </div>
 
+                {/* Section Stratégie Territoriale (Greenlina) */}
+                <div className="glass-panel p-6 rounded-2xl border border-cyan-500/30 bg-cyan-900/10">
+                    <h4 className="text-lg font-semibold text-cyan-400 mb-2 flex items-center gap-2">
+                        <Zap size={18} /> Stratégie Territoriale
+                    </h4>
+                    <p className="text-sm text-slate-300 mb-4">
+                        Pour éviter les coûts de transport maritime des épaves vers le continent, l'installation d'une unité de pyrolyse mobile <strong>Greenlina</strong> est recommandée sur ce territoire.
+                    </p>
+                    <div className="flex items-center gap-4 text-xs font-mono text-cyan-200/80">
+                        <span className="flex items-center gap-1"><Truck size={12}/> Économie Transport: 100%</span>
+                        <span className="flex items-center gap-1"><Recycle size={12}/> Valorisation sur site</span>
+                    </div>
+                </div>
+
                 <div className="glass-panel p-6 rounded-2xl flex-1">
                     <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                        <Truck className="text-indigo-400" /> Gisements & Flux Insulaires
+                        <Ship className="text-indigo-400" /> Filière Nautique
                     </h4>
                     
                     <div className="space-y-4">
@@ -129,22 +159,15 @@ const CorsicaMap: React.FC = () => {
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-2">
                                             <Package size={16} className="text-slate-500" />
-                                            <span className="text-2xl font-bold text-white">{transit.tons} <span className="text-sm font-normal text-slate-500">Tonnes</span></span>
+                                            <span className="text-2xl font-bold text-white">{transit.tons} <span className="text-sm font-normal text-slate-500">T</span></span>
                                         </div>
                                         <div className="h-2 w-24 bg-slate-700 rounded-full overflow-hidden">
-                                            <div className="h-full bg-emerald-500" style={{ width: `${Math.min(100, (transit.tons / 1500) * 100)}%` }}></div>
+                                            <div className="h-full bg-emerald-500" style={{ width: `${Math.min(100, (transit.tons / 500) * 100)}%` }}></div>
                                         </div>
                                     </div>
                                 </div>
                             );
                         })}
-                    </div>
-                    
-                    <div className="mt-6 p-4 bg-indigo-900/20 rounded-xl border border-indigo-500/20 flex gap-3 items-start">
-                        <Info className="text-indigo-400 shrink-0 mt-1" size={20} />
-                        <p className="text-sm text-indigo-200/80">
-                            Les données incluent les flux maritimes vers le continent (Marseille/Toulon) et l'Italie (Sardaigne/Toscane).
-                        </p>
                     </div>
                 </div>
             </div>
@@ -155,7 +178,7 @@ const CorsicaMap: React.FC = () => {
                 </div>
                 <h3 className="text-xl font-bold text-slate-300 mb-2">Sélectionnez un département</h3>
                 <p className="max-w-xs mx-auto">
-                    Cliquez sur la Haute-Corse (Nord) ou la Corse-du-Sud pour visualiser les spécificités locales.
+                    Cliquez sur la Corse-du-Sud pour voir le Centre Agréé ou la Haute-Corse pour les flux logistiques.
                 </p>
             </div>
         )}

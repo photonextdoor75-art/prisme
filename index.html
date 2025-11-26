@@ -7,11 +7,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       // POLYFILL ENVIRONMENT FOR BROWSER
-      // This allows 'process.env.API_KEY' to work in the browser, fixing the "Blue Screen" crash
-      // and integrating the provided Gemini Key.
+      // NOTE: Les clés API ne doivent jamais être stockées ici en production.
+      // Elles doivent être injectées par le serveur ou le processus de build (Vercel, CI/CD).
       window.process = {
         env: {
-          API_KEY: "AIzaSyBMDXPIPd9z6XUDIRewhJi6a_MyZ-9GU-0"
+          // La clé API Gemini doit être configurée dans les variables d'environnement de votre hébergeur.
+          API_KEY: "" 
         }
       };
 

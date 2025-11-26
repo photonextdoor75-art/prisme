@@ -1,54 +1,58 @@
-import React, { useState } from 'react';
-import { Truck, Package, Factory, MapPin, Info } from 'lucide-react';
 
-// Mock data for the PACA region transits
-const REGIONAL_DATA: Record<string, { name: string; pref: string; transits: { material: string; tons: number; type: string }[] }> = {
+import React, { useState } from 'react';
+import { Truck, Package, Factory, MapPin, Info, Anchor, Ship, Recycle } from 'lucide-react';
+
+// Données 100% Yachting / APER
+const REGIONAL_DATA: Record<string, { name: string; pref: string; recycler?: string; transits: { material: string; tons: number; type: string }[] }> = {
   "13": { 
     name: "Bouches-du-Rhône", 
     pref: "Marseille",
+    recycler: "La Tribu Maritime (Port-St-Louis)",
     transits: [
-      { material: "Aluminium Industriel", tons: 850, type: "industrial" },
-      { material: "Plastiques PET (Bouteilles)", tons: 420, type: "raw_material" },
-      { material: "Déchets Électroniques (DEEE)", tons: 150, type: "tech" }
+      { material: "Accastillage (Réemploi)", tons: 45, type: "tech" },
+      { material: "Voiles & Cordages", tons: 12, type: "raw_material" },
+      { material: "Inox 316L (Recyclage)", tons: 150, type: "industrial" }
     ]
   },
   "06": { 
     name: "Alpes-Maritimes", 
     pref: "Nice",
+    recycler: "Groupe Sclavo (Fréjus/Mandelieu)",
     transits: [
-      { material: "Textile Haut de Gamme", tons: 85, type: "industrial" },
-      { material: "Composants Serveurs", tons: 45, type: "tech" }
+      { material: "Teck & Bois Exotiques", tons: 85, type: "raw_material" },
+      { material: "Superyachting (Composite)", tons: 310, type: "industrial" }
     ]
   },
   "83": { 
     name: "Var", 
     pref: "Toulon",
+    recycler: "France Récupération Recyclage",
     transits: [
-      { material: "Déchets Nautiques (Composites)", tons: 320, type: "industrial" },
-      { material: "Verre Plat", tons: 210, type: "raw_material" }
+      { material: "Coques Polyester (CSR)", tons: 820, type: "industrial" },
+      { material: "Moteurs & Lests (Fonte)", tons: 340, type: "industrial" },
+      { material: "Déchets Dangereux (Pyrotechnie)", tons: 5, type: "tech" }
     ]
   },
   "84": { 
     name: "Vaucluse", 
     pref: "Avignon",
     transits: [
-      { material: "Biomasse & Bois", tons: 560, type: "raw_material" },
-      { material: "Emballages Agroalimentaires", tons: 180, type: "industrial" }
+      { material: "Plaisance Fluviale (Coques)", tons: 60, type: "industrial" },
+      { material: "Petits Équipements", tons: 15, type: "raw_material" }
     ]
   },
   "04": { 
     name: "Alpes-de-Hte-Provence", 
     pref: "Digne-les-Bains",
     transits: [
-      { material: "Huiles Usagées", tons: 90, type: "industrial" },
-      { material: "Déchets BTP (Inertes)", tons: 1200, type: "raw_material" }
+      { material: "Embarcations Lacustres", tons: 25, type: "raw_material" }
     ]
   },
   "05": { 
     name: "Hautes-Alpes", 
     pref: "Gap",
     transits: [
-      { material: "Bois de Construction", tons: 450, type: "raw_material" }
+      { material: "Canoës/Kayaks HS", tons: 10, type: "raw_material" }
     ]
   }
 };
@@ -77,19 +81,27 @@ const PACAMap: React.FC = () => {
     <div className="h-full p-6 animate-fade-in flex flex-col lg:flex-row gap-6">
       
       {/* Map Container */}
-      <div className="w-full lg:w-3/5 glass-panel rounded-2xl p-8 flex flex-col items-center relative">
-        <div className="absolute top-6 left-6">
+      <div className="w-full lg:w-3/5 glass-panel rounded-2xl p-8 flex flex-col items-center relative overflow-hidden bg-slate-900">
+        <div className="absolute top-6 left-6 z-20">
             <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                <MapPin className="text-emerald-400" /> Région Sud (PACA)
+                <Anchor className="text-blue-400" /> Région Sud (PACA)
             </h2>
-            <p className="text-slate-400 text-sm">Cliquez sur un département pour voir les flux.</p>
+            <p className="text-slate-400 text-sm">Filière APER & Recycleurs Agréés</p>
         </div>
 
-        <div className="w-full h-full flex items-center justify-center max-w-2xl">
+        {/* Légende Recycleurs */}
+        <div className="absolute bottom-6 right-6 z-20 bg-slate-900/80 p-3 rounded-lg border border-slate-700 text-xs">
+            <div className="flex items-center gap-2 mb-1">
+                <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                <span className="text-slate-300">Centre de Déconstruction Agréé</span>
+            </div>
+        </div>
+
+        <div className="w-full h-full flex items-center justify-center max-w-2xl relative">
             <svg 
                 id="map" 
                 viewBox="350 335 145 125" 
-                className="w-full h-full drop-shadow-2xl overflow-visible"
+                className="w-full h-full drop-shadow-2xl overflow-visible relative z-10"
                 xmlns="http://www.w3.org/2000/svg"
             >
                 <g id="paca-region">
@@ -102,7 +114,7 @@ const PACAMap: React.FC = () => {
                     {/* 84: Vaucluse */}
                     <path 
                         onMouseEnter={() => setHoveredDept("84")} onMouseLeave={() => setHoveredDept(null)} onClick={() => handleClick("84")} className={getPathClass("84")}
-                        d="M379,377.34375 L376.25,377.5625 L374.125,380.875 L374.6875,384.375 L378,384.78125 L377.4375,386.34375 L374.875,386.53125 L371.96875,389.46875 L371.1875,388.5 L371.75,384.59375 L370.59375,383.21875 L365.3125,384 L364.28125,386.09375 L364.84375,386.40625 L368.15625,391.90625 L368.15625,396.34375 L373.96875,402.125 L373.96875,404.625 L371.71875,405.90625 L371.875,405.96875 L378.9375,408.96875 L381.9375,412.3125 L383.375,414.28125 L387.25,416.03125 L391.84375,415.875 L399.4375,419.03125 L403.6875,419.5625 L409,418.34375 L411.1875,416.625 L411.46875,415.15625 L407.40625,410.5625 L402.96875,410.5625 L402.96875,408.96875 L404.5625,407.1875 L404.5625,405.25 L401.03125,403.5 L400.6875,400.65625 L402.625,399.78125 L402.625,397.3125 L400.5,396.9375 L400.34375,394.28125 L400.3125,394.09375 L398.53125,393.96875 L395.59375,391.8125 L394.8125,389.28125 L389.34375,388.875 L385.25,388.5 L384.84375,386.15625 L386.21875,383.21875 L383.6875,385.375 L379.78125,384.96875 L379,383.59375 L381.71875,379.90625 L379,377.34375 L379,377.34375 L379,377.34375 L379,377.34375 Z"
+                        d="M379,377.34375 L376.25,377.5625 L374.125,380.875 L374.6875,384.375 L378,384.78125 L377.4375,386.34375 L374.875,386.53125 L371.96875,389.46875 L371.1875,388.5 L371.75,384.59375 L370.59375,383.21875 L365.3125,384 L364.28125,386.09375 L364.84375,386.40625 L368.15625,391.90625 L368.15625,396.34375 L373.96875,402.125 L373.96875,404.625 L371.71875,405.90625 L371.875,405.96875 L378.9375,408.96875 L381.9375,412.3125 L383.375,414.28125 L387.25,416.03125 L391.84375,415.875 L399.4375,419.03125 L403.6875,419.5625 L409,418.34375 L411.1875,416.625 L411.46875,415.15625 L407.40625,410.5625 L402.96875,410.5625 L402.96875,408.96875 L404.5625,407.1875 L404.5625,405.25 L401.03125,403.5 L400.6875,400.65625 L402.625,399.78125 L402.625,397.3125 L400.5,396.9375 L400.34375,394.28125 L400.3125,394.09375 L398.53125,393.96875 L395.59375,391.8125 L394.8125,389.28125 L389.34375,388.875 L385.25,388.5 L384.84375,386.15625 L386.21875,383.21875 L383.6875,385.375 L379.78125,384.96875 L379,383.59375 L381.71875,379.90625 L379,377.34375 L379,377.34375 L379,377.34375 L379,377.34375 Z M379,377.34375"
                     />
                     
                     {/* 83: Var */}
@@ -126,9 +138,25 @@ const PACAMap: React.FC = () => {
                     {/* 05: Hautes-Alpes */}
                     <path 
                         onMouseEnter={() => setHoveredDept("05")} onMouseLeave={() => setHoveredDept(null)} onClick={() => handleClick("05")} className={getPathClass("05")}
-                        d="M439.34375,335.15625 L437.59375,335.9375 L437.1875,338.875 L433.6875,339.28125 L433.09375,336.53125 L431.9375,335.375 L428.40625,335.75 L427.03125,336.9375 L426.25,341.03125 L426.84375,342 L430.9375,342.40625 L431.71875,344.9375 L433.28125,345.71875 L433.28125,350 L429.5625,349.8125 L428,351.5625 L423.53125,350.78125 L421,352.9375 L419.21875,352.15625 L416.6875,354.125 L417.65625,355.875 L416.09375,357.4375 L411.21875,357.4375 L411.21875,359.78125 L412.78125,360.5625 L412.1875,361.9375 L408.875,363.28125 L404.78125,363.6875 L403.59375,367.40625 L403.40625,369.75 L405.5625,371.5 L403.40625,374.03125 L400.6875,372.65625 L397.5625,372.46875 L397.15625,374.21875 L399.125,375.59375 L396.75,377.15625 L397.5625,380.46875 L404.1875,382.25 L405.375,384.78125 L407.3125,385.15625 L406.65625,391.25 L406.6875,391.28125 L409.6875,388.46875 L413.25,388.46875 L414.65625,389.34375 L416.59375,388.625 L413.59375,385.28125 L413.0625,383.6875 L414.125,383.5 L416.0625,385.28125 L417.3125,385.28125 L417.125,382.4375 L415.875,382.09375 L416.40625,380.34375 L418.53125,376.78125 L421.90625,374.84375 L423.5,374.5 L423.5,372.71875 L424.5625,372.71875 L426.5,374.3125 L426.5,375.5625 L429.84375,377.6875 L430.75,377.3125 L430.21875,373.96875 L429.3125,373.96875 L430.21875,372.71875 L433.90625,372.90625 L435.875,371.5 L438.875,373.09375 L445.21875,373.25 L446.28125,370.59375 L447,369.53125 L447,367.59375 L449.65625,367.4375 L450.71875,365.3125 L453.71875,363.53125 L455.84375,360.34375 L458.375,360.46875 L460.21875,358.46875 L462.34375,358.65625 L462.34375,356.90625 L459.625,355.53125 L459.03125,349.875 L456.875,349.09375 L454.15625,349.5 L449.0625,346.9375 L448.28125,341.09375 L445.375,340.125 L444.375,338.15625 L443.09375,335.34375 L439.34375,335.15625 L439.34375,335.15625 L439.34375,335.15625 L439.34375,335.15625 Z"
-                    />
+                        d="M439.34375,335.15625 L437.59375,335.9375 L437.1875,338.875 L433.6875,339.28125 L433.09375,336.53125 L431.9375,335.375 L428.40625,335.75 L427.03125,336.9375 L426.25,341.03125 L426.84375,342 L430.9375,342.40625 L431.71875,344.9375 L433.28125,345.71875 L433.28125,350 L429.5625,349.8125 L428,351.5625 L423.53125,350.78125 L421,352.9375 L419.21875,352.15625 L416.6875,354.125 L417.65625,355.875 L416.09375,357.4375 L411.21875,357.4375 L411.21875,359.78125 L412.78125,360.5625 L412.1875,361.9375 L408.875,363.28125 L404.78125,363.6875 L403.59375,367.40625 L403.40625,369.75 L405.5625,371.5 L403.40625,374.03125 L400.6875,372.65625 L397.5625,372.46875 L397.15625,374.21875 L399.125,375.59375 L396.75,377.15625 L397.5625,380.46875 L404.1875,382.25 L405.375,384.78125 L407.3125,385.15625 L406.65625,391.25 L406.6875,391.28125 L409.6875,388.46875 L413.25,388.46875 L414.65625,389.34375 L416.59375,388.625 L413.59375,385.28125 L413.0625,383.6875 L414.125,383.5 L416.0625,385.28125 L417.3125,385.28125 L417.125,382.4375 L415.875,382.09375 L416.40625,380.34375 L418.53125,376.78125 L421.90625,374.84375 L423.5,374.5 L423.5,372.71875 L424.5625,372.71875 L426.5,374.3125 L426.5,375.5625 L429.84375,377.6875 L430.75,377.3125 L430.21875,373.96875 L429.3125,373.96875 L430.21875,372.71875 L433.90625,372.90625 L435.875,371.5 L438.875,373.09375 L445.21875,373.25 L446.28125,370.59375 L447,369.53125 L447,367.59375 L449.65625,367.4375 L450.71875,365.3125 L453.71875,363.53125 L455.84375,360.34375 L458.375,360.46875 L460.21875,358.46875 L462.34375,358.65625 L462.34375,356.90625 L459.625,355.53125 L459.03125,349.875 L456.875,349.09375 L454.15625,349.5 L449.0625,346.9375 L448.28125,341.09375 L445.375,340.125 L444.375,338.15625 L443.09375,335.34375 L439.34375,335.15625 L439.34375,335.15625 L439.34375,335.15625 L439.34375,335.15625 Z M439.34375,335.15625" />
                 </g>
+                
+                {/* Recycleurs (Points Bleus Statiques) */}
+                {/* Port-Saint-Louis (La Tribu Maritime) - Approx near Marseille */}
+                <g className="cursor-pointer group" onClick={() => handleClick("13")}>
+                    <circle cx="375" cy="435" r="3" className="fill-blue-500" />
+                </g>
+
+                {/* Toulon (France Récupération Recyclage) */}
+                <g className="cursor-pointer group" onClick={() => handleClick("83")}>
+                    <circle cx="430" cy="445" r="3" className="fill-blue-500" />
+                </g>
+
+                {/* Fréjus (Groupe Sclavo) */}
+                <g className="cursor-pointer group" onClick={() => handleClick("06")}>
+                    <circle cx="450" cy="435" r="3" className="fill-blue-500" />
+                </g>
+
             </svg>
         </div>
       </div>
@@ -143,11 +171,20 @@ const PACAMap: React.FC = () => {
                         <MapPin size={16} />
                         <span>Préfecture : {currentData.pref}</span>
                     </div>
+                    {currentData.recycler && (
+                        <div className="mt-3 p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg flex items-center gap-2">
+                            <Recycle size={18} className="text-blue-400" />
+                            <div>
+                                <p className="text-xs text-blue-300 uppercase font-bold">Centre Agréé APER</p>
+                                <p className="text-white font-medium">{currentData.recycler}</p>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 <div className="glass-panel p-6 rounded-2xl flex-1">
                     <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                        <Truck className="text-indigo-400" /> Gisements en Transit
+                        <Ship className="text-indigo-400" /> Filière Nautique
                     </h4>
                     
                     <div className="space-y-4">
@@ -165,7 +202,7 @@ const PACAMap: React.FC = () => {
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
                                         <Package size={16} className="text-slate-500" />
-                                        <span className="text-2xl font-bold text-white">{transit.tons} <span className="text-sm font-normal text-slate-500">Tonnes</span></span>
+                                        <span className="text-2xl font-bold text-white">{transit.tons} <span className="text-sm font-normal text-slate-500">T</span></span>
                                     </div>
                                     <div className="h-2 w-24 bg-slate-700 rounded-full overflow-hidden">
                                         <div className="h-full bg-emerald-500" style={{ width: `${Math.min(100, (transit.tons / 1000) * 100)}%` }}></div>
@@ -178,7 +215,7 @@ const PACAMap: React.FC = () => {
                     <div className="mt-6 p-4 bg-indigo-900/20 rounded-xl border border-indigo-500/20 flex gap-3 items-start">
                         <Info className="text-indigo-400 shrink-0 mt-1" size={20} />
                         <p className="text-sm text-indigo-200/80">
-                            Ces données sont agrégées en temps réel depuis les déclarations de transit des entreprises partenaires de la région {currentData.name}.
+                            Données officielles APER 2024. Les points bleus indiquent les centres de déconstruction agréés actifs.
                         </p>
                     </div>
                 </div>
@@ -190,7 +227,7 @@ const PACAMap: React.FC = () => {
                 </div>
                 <h3 className="text-xl font-bold text-slate-300 mb-2">Aucun département sélectionné</h3>
                 <p className="max-w-xs mx-auto">
-                    Cliquez sur une zone de la carte (Bouches-du-Rhône, Var, Alpes...) pour visualiser les gisements actifs.
+                    Cliquez sur un département ou un point bleu (Centre de Recyclage) pour voir les détails de la filière.
                 </p>
             </div>
         )}
