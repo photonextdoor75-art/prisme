@@ -4,7 +4,8 @@ import ValuationEngine from './components/ValuationEngine';
 import TerritorialMap from './components/TerritorialMap';
 import CrossBorderBridge from './components/CrossBorderBridge';
 import SystemDiagnostics from './components/SystemDiagnostics';
-import { LayoutDashboard, Coins, Map as MapIcon, Globe, ShieldCheck, Database } from 'lucide-react';
+import PACAMap from './components/PACAMap';
+import { LayoutDashboard, Coins, Map as MapIcon, Globe, ShieldCheck, Database, MapPin } from 'lucide-react';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>(AppView.DASHBOARD);
@@ -17,6 +18,8 @@ const App: React.FC = () => {
         return <TerritorialMap />;
       case AppView.BRIDGE:
         return <CrossBorderBridge />;
+      case AppView.REGION_SUD:
+        return <PACAMap />;
       case AppView.DASHBOARD:
       default:
         return <DashboardHome onChangeView={setCurrentView} />;
@@ -63,6 +66,15 @@ const App: React.FC = () => {
                 label="Pont Transfrontalier" 
                 active={currentView === AppView.BRIDGE} 
                 onClick={() => setCurrentView(AppView.BRIDGE)} 
+             />
+             
+             <div className="my-2 h-px bg-slate-800 mx-2"></div>
+             <p className="hidden lg:block px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Focus</p>
+             <NavItem 
+                icon={<MapPin size={20} />} 
+                label="Région Sud (PACA)" 
+                active={currentView === AppView.REGION_SUD} 
+                onClick={() => setCurrentView(AppView.REGION_SUD)} 
              />
           </nav>
         </div>

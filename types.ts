@@ -15,6 +15,7 @@ export interface Hub {
   lng: number; // Relative coordinates for visualization
   stockLevel: number; // 0-100
   material: string;
+  departmentCode?: string; // Link to specific department map
 }
 
 export interface CrossBorderFlow {
@@ -29,5 +30,6 @@ export enum AppView {
   DASHBOARD = 'DASHBOARD',
   VALUATION = 'VALUATION',
   MAP = 'MAP',
-  BRIDGE = 'BRIDGE'
+  BRIDGE = 'BRIDGE',
+  REGION_SUD = 'REGION_SUD'
 }
