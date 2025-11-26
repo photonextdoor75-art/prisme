@@ -3,6 +3,7 @@ import { AppView } from './types';
 import ValuationEngine from './components/ValuationEngine';
 import TerritorialMap from './components/TerritorialMap';
 import CrossBorderBridge from './components/CrossBorderBridge';
+import SystemDiagnostics from './components/SystemDiagnostics';
 import { LayoutDashboard, Coins, Map as MapIcon, Globe, ShieldCheck, Database } from 'lucide-react';
 
 const App: React.FC = () => {
@@ -145,17 +146,8 @@ const DashboardHome: React.FC<{ onChangeView: (view: AppView) => void }> = ({ on
             />
         </div>
         
-        <div className="mt-12 p-6 rounded-2xl bg-gradient-to-r from-emerald-950/40 to-slate-900 border border-emerald-500/20 relative overflow-hidden flex items-start gap-4">
-            <div className="p-3 bg-emerald-500/20 rounded-full text-emerald-400">
-                <Database size={24} />
-            </div>
-            <div className="relative z-10">
-                <h3 className="text-lg font-bold text-white mb-1">Système Connecté</h3>
-                <p className="text-slate-400 text-sm">
-                    <span className="text-emerald-400 font-semibold">Firebase Activé :</span> Vos analyses de valorisation sont désormais historisées automatiquement dans le cloud pour un suivi sur le long terme.
-                </p>
-            </div>
-        </div>
+        {/* System Diagnostics Panel */}
+        <SystemDiagnostics />
     </div>
 );
 

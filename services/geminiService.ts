@@ -11,6 +11,23 @@ if (apiKey) {
   ai = new GoogleGenAI({ apiKey });
 }
 
+export const testGeminiConnection = async (): Promise<{ success: boolean; message: string }> => {
+  if (!ai) {
+    return { success: false, message: "Clé API non trouvée (process.env.API_KEY vide)" };
+  }
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: 'Respond with "OK" if you receive this.',
+    });
+    const text = response.text;
+    return { success: true, message: `Succès! Réponse de l'IA: "${text?.slice(0, 20)}..."` };
+  } catch (error: any) {
+    console.error("Gemini Test Error:", error);
+    return { success: false, message: error.message || "Erreur de connexion API Gemini" };
+  }
+};
+
 export const analyzeAssets = async (assetDescription: string): Promise<MetricResult> => {
   if (!ai) {
     throw new Error("Clé API Gemini manquante. Veuillez configurer process.env.API_KEY.");
