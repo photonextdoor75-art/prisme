@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import { testFirebaseConnection } from '../services/firebase';
 import { testGeminiConnection } from '../services/geminiService';
-import { Activity, Database, Cpu, CheckCircle2, XCircle, Loader2, AlertTriangle } from 'lucide-react';
+import { Activity, Database, Cpu, CheckCircle2, XCircle, Loader2, AlertTriangle, Play } from 'lucide-react';
 
-const SystemDiagnostics: React.FC = () => {
+interface SystemDiagnosticsProps {
+  isSidebar?: boolean;
+}
+
+const SystemDiagnostics: React.FC<SystemDiagnosticsProps> = ({ isSidebar }) => {
   const [firebaseStatus, setFirebaseStatus] = useState<{ status: 'idle' | 'loading' | 'success' | 'error'; message: string; hint?: string }>({ status: 'idle', message: '' });
   const [geminiStatus, setGeminiStatus] = useState<{ status: 'idle' | 'loading' | 'success' | 'error'; message: string }>({ status: 'idle', message: '' });
 
@@ -33,6 +37,32 @@ const SystemDiagnostics: React.FC = () => {
       message: result.message 
     });
   };
+
+  if (isSidebar) {
+     return (
+        <div className="flex flex-col gap-3 w-full">
+            <div className="flex items-center justify-between group">
+               <div className="flex items-center gap-2 overflow-hidden">
+                   <Database size={14} className={firebaseStatus.status === 'success' ? "text-emerald-400" : firebaseStatus.status === 'error' ? "text-red-400" : "text-slate-500"} />
+                   <span className="text-[10px] font-mono text-slate-400 hidden lg:block truncate">FIREBASE</span>
+               </div>
+               <button onClick={runFirebaseTest} disabled={firebaseStatus.status === 'loading'} className="text-slate-500 hover:text-white transition-colors">
+                  {firebaseStatus.status === 'loading' ? <Loader2 size={12} className="animate-spin"/> : <Play size={10} className="fill-current"/>}
+               </button>
+            </div>
+            
+            <div className="flex items-center justify-between group">
+               <div className="flex items-center gap-2 overflow-hidden">
+                   <Cpu size={14} className={geminiStatus.status === 'success' ? "text-blue-400" : geminiStatus.status === 'error' ? "text-red-400" : "text-slate-500"} />
+                   <span className="text-[10px] font-mono text-slate-400 hidden lg:block truncate">GEMINI AI</span>
+               </div>
+               <button onClick={runGeminiTest} disabled={geminiStatus.status === 'loading'} className="text-slate-500 hover:text-white transition-colors">
+                  {geminiStatus.status === 'loading' ? <Loader2 size={12} className="animate-spin"/> : <Play size={10} className="fill-current"/>}
+               </button>
+            </div>
+        </div>
+     );
+  }
 
   return (
     <div className="glass-panel p-6 rounded-2xl border border-slate-700 mt-6">
